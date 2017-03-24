@@ -1,21 +1,21 @@
 #! /usr/bin/env python
-#This script will pull the final atom positions out of a cp2k output file.
+#This script will pull the final atom positions out of a cp2k output file which has '-pos-#.xyz' format
 import matplotlib.pyplot as plt
 import numpy as np
 import os
 import readline
+import subprocess
 
 #turn on tab completion, and remove '-' from the list of delimiters as cp2k uses tabs in file names.
 readline.parse_and_bind("tab: complete")
 readline.set_completer_delims(readline.get_completer_delims().replace('-',''))
 
-#get positions file name and system name from user
-fileName = raw_input('Enter datafile name:\n')
+#get positions file name and system name
+fN = subprocess.Popen(r'ls *pos*', stdout=subprocess.PIPE, shell=True)
+fileName = str(fN.communicate()[0]).rstrip("\n")
 
 #create the string of the output file's name:
-outputPiece = raw_input('Enter desired output file name.\n Sample: benzeneAndDmmp\n\n The "finalPositions" and ".xyz" extension will be added automatically\n')
-
-outputName = 'finalPositions' + outputPiece + '.xyz'
+outputName = 'finalPositions' + fileName.rsplit('-',2)[0] + '.xyz'
 
 #open the file and read the number of atoms from the first line, storing the number as an int
 positionFile = open(fileName,'r')
