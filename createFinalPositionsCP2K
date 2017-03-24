@@ -1,0 +1,49 @@
+#! /usr/bin/env python
+#This script will pull the final atom positions out of a cp2k output file.
+import matplotlib.pyplot as plt
+import numpy as np
+import os
+import readline
+
+#turn on tab completion, and remove '-' from the list of delimiters as cp2k uses tabs in file names.
+readline.parse_and_bind("tab: complete")
+readline.set_completer_delims(readline.get_completer_delims().replace('-',''))
+
+#get positions file name and system name from user
+fileName = raw_input('Enter datafile name:\n')
+
+#create the string of the output file's name:
+outputPiece = raw_input('Enter desired output file name.\n Sample: benzeneAndDmmp\n\n The "finalPositions" and ".xyz" extension will be added automatically\n')
+
+outputName = 'finalPositions' + outputPiece + '.xyz'
+
+#open the file and read the number of atoms from the first line, storing the number as an int
+positionFile = open(fileName,'r')
+atomsNumber = int(positionFile.readline())
+positionFile.close()
+
+#to create a proper xyz file, the total number of lines we need is the number of atoms plus two additional lines, one containing the number of atoms, and the other being the comment line. We already have the number of atoms from above. Therefore, we need to get the comment line and the atom positions from the final iteration, which are the last 1 + atomsNumber lines of the file.
+
+#One way to accomplish this is to read in all of the lines, determine the total number of lines, and then discard all of them until line # = total number of lines - atomsNumber - 1
+
+#read in all lines
+positionFile2 = open(fileName,"r")
+lines = positionFile2.readlines()
+positionFile2.close()
+
+#determine total number of lines
+numOfLines = len(lines)
+
+#what line is the first one that we actually want? Python indexes from 0, so we need:
+firstLine = numOfLines - atomsNumber - 2
+#because numOfLines will have the integer number of lines.
+
+#open the file for the final positions:
+finalPositions = open(outputName,'a')
+
+#now the loop
+for j, line in enumerate(lines):
+    if j >= firstLine:
+        finalPositions.write(line)
+
+finalPositions.close()
