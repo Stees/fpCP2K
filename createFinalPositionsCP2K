@@ -23,7 +23,7 @@ numOfLines = len(lines)
 firstLine = numOfLines - atomsNumber - 2
 #because numOfLines will have the integer number of lines.
 #open the file for the final positions:
-finalPositions = open(outputName,'a')
+finalPositions = open(outputName,'w')
 #now the loop
 for j, line in enumerate(lines):
     if j >= firstLine:
