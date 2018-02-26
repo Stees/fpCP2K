@@ -2,12 +2,16 @@
 #This script will pull the final atom positions out of a cp2k output file which has '-pos-#.xyz' format
 import readline
 import subprocess
+import string
 
 #get positions file name and system name
 fN = subprocess.Popen(r'ls *pos*', stdout=subprocess.PIPE, shell=True)
 fileName = str(fN.communicate()[0]).rstrip("\n")
 #create the string of the output file's name:
-outputName = 'finalPositions' + fileName.rsplit('-',2)[0] + '.xyz'
+tempString = fileName.rsplit('-',2)[0]
+firstLetter = tempString[:1].capitalize()
+remainder = tempString[1:]
+outputName = 'finalPositions' + firstLetter + remainder + '.xyz'
 #open the file and read the number of atoms from the first line, storing the number as an int
 try:
     positionFile = open(fileName,'r')
